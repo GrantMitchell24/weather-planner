@@ -2,14 +2,14 @@ var currentWeatherDiv = $("#currentWeatherDiv")
 var fiveDayMainDiv = $("#fiveDayMainDiv")
 var searchBtn = $("#searchBtn")
 var searchField = $("#searchField")
-var searchHistoryDiv = $("#serachHistoryDiv")
+var searchHistoryDiv = $("#searchHistoryDiv")
 var dateToday = dayjs();
 var startUpLoaded = false;
 var searchedCities = [];
 
 
 
-function LoadSearchHistory() {
+function loadSearchHistory() {
   searchHistoryDiv.empty();
   searchedCities = JSON.parse(localStorage.getItem("Weather-Dashboard-Cities"));
   if (searchedCities === null) {
@@ -29,14 +29,14 @@ function LoadSearchHistory() {
     getCityInfo(searchedCities[0])
   }
 }
-LoadSearchHistory();
+loadSearchHistory();
 
 function search() {
   getCityInfo(searchField.val().trim());
 }
 
 function getCityInfo(city) {
-  let requestCity = 'https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=a578ab4f26c2e05e73c69c0d6adc6341'
+  let requestCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units-imperial8appid=a578ab4f26c2e05e73c69c0d6adc6341`
 
   fetch(requestCity)
     .then(function (response) {
@@ -50,7 +50,7 @@ function getCityInfo(city) {
 
         currentWeather(data.name, Math.round(data.main.temp), Math.round(data.main.feels_like), Math.round(data.wind.speed), data.main.humidity, data.weather[0].icon)
 
-        generateFiveDayForecast(data.coord.lat, data.coord.long);
+        generateFiveDayForecast(data.coord.lat, data.coord.lon);
 
         $(searchField).val("");
 
@@ -59,7 +59,7 @@ function getCityInfo(city) {
           removedCity = [];
         }
 
-        searchedCities.unshift(data.ame)
+        searchedCities.unshift(data.name)
 
         while (searchedCities.length > 5) {
           searchedCities.pop();
@@ -67,7 +67,7 @@ function getCityInfo(city) {
 
         localStorageStorage.setItem("Weather-Dashboard-Cities", JSON.stringify(searchedCities));
 
-        loadSearchedHistory();
+        loadSearchHistory();
 
       } else {
         alert("Invalid City, Search Again")
@@ -89,43 +89,44 @@ function currentWeather(cityName, temp, feelsLike, wind, humidity, icon) {
 
 function generateFiveDayForecast(lat, lon) {
 
-  let requestFiveDayForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=a578ab4f26c2e05e73c69c0d6adc6341`
+  let requestFiveDayForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=a578ab4f26c2e05e73c69c0d6adc6341`
 
   fetch(requestFiveDayForecast)
-  .then(function (resopnse) {
-    return repsonse.json();
-  })
-.then(function (data) {
+    .then(function (resopnse) {
+      return repsonse.json();
+    })
+    .then(function (data) {
 
-  let subDiv =$("<div></div>").attr("id", "fiveDaySubDiv").addClass("row")
-  let sectionHead = $("<h2></h2>").text("5-day Forecast")
+      let subDiv = $("<div></div>").attr("id", "fiveDaySubDiv").addClass("row")
+      let sectionHead = $("<h2></h2>").text("5-day Forecast")
 
-  for (i =5; i < 40; i += 8) {
-    let dayCard = $("<div></div>")
-    $(dayCard).append(
-      $("<p></p>").text(`${dateToday.add(i, "day").format("dddd, MMM Do")}`),
-      $("<img></img>").attr("src", `https://openweathermap.org/img.wn/${data.list[i].weather[0].icon}@2x.png`).attr("alt", "Icon showing weather"),
-      $("<p></p>").text(`Temp: ${Math.round(data.list[i].main.temp_max)}\x80F`),
-      $("<p></p>").text(`Wind: ${Math.round(data.list[i].wind.speed)}mph`),
-      $("<p></p>").text(`Humidity: ${data.list[i].main.humidity}%`)
-    )
-    $(dayCard).addClass("singleCard col-12 col-sm-2");
-    $(subDiv).append(dayCard);
-    $(fiveDayMainDiv).append(sectionHead, subDiv);
-}
-})
+      for (i = 5; i < 40; i += 8) {
+        let dayCard = $("<div></div>")
+        $(dayCard).append(
+          $("<p></p>").text(`${dateToday.add(i, "day").format("dddd, MMM Do")}`),
+          $("<img></img>").attr("src", `https://openweathermap.org/img.wn/${data.list[i].weather[0].icon}@2x.png`).attr("alt", "Icon showing weather"),
+          $("<p></p>").text(`Temp: ${Math.round(data.list[i].main.temp_max)}\x80F`),
+          $("<p></p>").text(`Wind: ${Math.round(data.list[i].wind.speed)}mph`),
+          $("<p></p>").text(`Humidity: ${data.list[i].main.humidity}%`)
+        )
+        $(dayCard).addClass("singleCard col-12 col-sm-2");
+        $(subDiv).append(dayCard);
+        $(fiveDayMainDiv).append(sectionHead, subDiv);
+      }
+    })
 }
 
 
 searchBtn.on("click", search)
 
-$("#searchHistoryDiv").on("click", ".clearHistoryBtn", function() {
+$("#searchHistoryDiv").on("click", ".clearHistoryBtn", function () {
   searchHistoryDiv.empty()
   searchedCities = []
   localStorage.removeItem("Weather-Dashboard-Cities")
 })
 
-$("#searchHistoryDiv").on("click", ".cityBtn", function (){
-  getCityInfo(this.value)}
+$("#searchHistoryDiv").on("click", ".cityBtn", function () {
+  getCityInfo(this.value)
+}
 )
 
