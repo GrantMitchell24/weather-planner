@@ -24,7 +24,7 @@ function loadSearchHistory() {
     $("<button></button>").addClass("btn btn-primary clearHistoryBtn").text("Clear Search History")
   )
 
-  if (startUploaded === false && searchedCities.length > 0) {
+  if (startUpLoaded === false && searchedCities.length > 0) {
     startUpLoaded = true;
     getCityInfo(searchedCities[0])
   }
@@ -36,7 +36,7 @@ function search() {
 }
 
 function getCityInfo(city) {
-  let requestCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units-imperial8appid=a578ab4f26c2e05e73c69c0d6adc6341`
+  let requestCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=a578ab4f26c2e05e73c69c0d6adc6341`
 
   fetch(requestCity)
     .then(function (response) {
@@ -92,8 +92,8 @@ function generateFiveDayForecast(lat, lon) {
   let requestFiveDayForecast = `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=imperial&appid=a578ab4f26c2e05e73c69c0d6adc6341`
 
   fetch(requestFiveDayForecast)
-    .then(function (resopnse) {
-      return repsonse.json();
+    .then(function (response) {
+      return response.json();
     })
     .then(function (data) {
 
@@ -101,10 +101,10 @@ function generateFiveDayForecast(lat, lon) {
       let sectionHead = $("<h2></h2>").text("5-day Forecast")
 
       for (i = 5; i < 40; i += 8) {
-        let dayCard = $("<div></div>")
+        let dayCard = $("<div></div>");
         $(dayCard).append(
           $("<p></p>").text(`${dateToday.add(i, "day").format("dddd, MMM Do")}`),
-          $("<img></img>").attr("src", `https://openweathermap.org/img.wn/${data.list[i].weather[0].icon}@2x.png`).attr("alt", "Icon showing weather"),
+          $("<img></img>").attr("src", `https://openweathermap.org/img/wn/${data.list[i].weather[0].icon}@2x.png`).attr("alt", "Icon showing weather"),
           $("<p></p>").text(`Temp: ${Math.round(data.list[i].main.temp_max)}\x80F`),
           $("<p></p>").text(`Wind: ${Math.round(data.list[i].wind.speed)}mph`),
           $("<p></p>").text(`Humidity: ${data.list[i].main.humidity}%`)
@@ -119,13 +119,13 @@ function generateFiveDayForecast(lat, lon) {
 
 searchBtn.on("click", search)
 
-$("#searchHistoryDiv").on("click", ".clearHistoryBtn", function () {
+$("#searchHistoryDiv").on("click", ".clearHistoryBtn", function(){
   searchHistoryDiv.empty()
   searchedCities = []
   localStorage.removeItem("Weather-Dashboard-Cities")
 })
 
-$("#searchHistoryDiv").on("click", ".cityBtn", function () {
+$("#searchHistoryDiv").on("click", ".cityBtn", function(){
   getCityInfo(this.value)
 }
 )

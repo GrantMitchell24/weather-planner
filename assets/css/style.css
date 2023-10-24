@@ -1,0 +1,19 @@
+body {
+  font-family: 'Fira Sans', sans-serif;
+}
+
+h1,
+h2{
+  font-family: 'Merriweather', serif;
+  font-weight: 700;
+}
+
+p{
+  font-family: 'Merriweather', serif;
+  font-weight: 300;
+}
+
+main {
+  margin: 20px auto;
+  width: 94%;
+}
