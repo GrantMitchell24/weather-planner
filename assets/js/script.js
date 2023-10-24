@@ -37,7 +37,7 @@ function search() {
 
 function getCityInfo(city) {
   let requestCity = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=imperial&appid=a578ab4f26c2e05e73c69c0d6adc6341`
-
+  console.log(city)
   fetch(requestCity)
     .then(function (response) {
       return response.json();
@@ -65,7 +65,7 @@ function getCityInfo(city) {
           searchedCities.pop();
         }
 
-        localStorageStorage.setItem("Weather-Dashboard-Cities", JSON.stringify(searchedCities));
+        localStorage.setItem("Weather-Dashboard-Cities", JSON.stringify(searchedCities));
 
         loadSearchHistory();
 
